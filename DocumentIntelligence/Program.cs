@@ -8,11 +8,11 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        // Klucz API i punkt końcowy Azure
+        
         string key = "";
         string endpoint = "https://<>.cognitiveservices.azure.com/";
 
-        // Ścieżka do pliku PDF
+
         string filePath = "";
 
         if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
@@ -25,10 +25,10 @@ class Program
         {
             var client = new DocumentAnalysisClient(new Uri(endpoint), new AzureKeyCredential(key));
 
-            // Otwórz plik jako strumień
+
             using FileStream fileStream = new FileStream(filePath, FileMode.Open);
 
-            // Wywołanie analizy dla dokumentu przy użyciu prebuilt-read
+
             AnalyzeDocumentOperation operation = await client.AnalyzeDocumentAsync(WaitUntil.Completed, "prebuilt-read", fileStream);
             AnalyzeResult result = operation.Value;
 

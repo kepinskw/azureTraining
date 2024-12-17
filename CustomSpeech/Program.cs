@@ -20,7 +20,7 @@ namespace P3
 
             var config = SpeechConfig.FromSubscription(subscriptionKey, region);
 
-            // Wybór języka
+            // Choose language
             Console.WriteLine("Wybierz język / Choose language:");
             Console.WriteLine("PL - Polski");
             Console.WriteLine("EN - English");
@@ -31,13 +31,13 @@ namespace P3
             {
                 Console.WriteLine("Wybrałeś język polski. Witaj!");
                 config.SpeechRecognitionLanguage = "pl-PL";
-                mp3FilePath = "pl-voice.mp3"; // Plik MP3 dla polskiego języka
+                mp3FilePath = "pl-voice.mp3"; // PL MP3
             }
             else if (userInput.Equals("EN", StringComparison.OrdinalIgnoreCase))
             {
                 Console.WriteLine("You have chosen English. Welcome!");
                 config.SpeechRecognitionLanguage = "en-US";
-                mp3FilePath = "en-voice.mp3"; // Plik MP3 dla angielskiego języka
+                mp3FilePath = "en-voice.mp3"; // EN MP3
             }
             else
             {
@@ -47,18 +47,18 @@ namespace P3
 
             try
             {
-                // Konwersja MP3 na WAV za pomocą FFmpeg
+                // MP3 to WAV 
                 ConvertMp3ToWav(mp3FilePath, wavFilePath);
                 Console.WriteLine("Plik MP3 został pomyślnie przekonwertowany na WAV.");
 
-                // Rozpoznawanie mowy z pliku WAV
+                // WAV recognizer
                 using var audioInput = AudioConfig.FromWavFileInput(wavFilePath);
                 using var recognizer = new SpeechRecognizer(config, audioInput);
 
                 Console.WriteLine("Rozpoczęcie rozpoznawania mowy...");
                 var result = await recognizer.RecognizeOnceAsync();
 
-                // Przetwarzanie wyniku rozpoznania
+                // Postprocessing
                 if (result.Reason == ResultReason.RecognizedSpeech)
                 {
                     Console.WriteLine($"Rozpoznany tekst: {result.Text}");
@@ -82,13 +82,13 @@ namespace P3
 
         public static void ConvertMp3ToWav(string mp3FilePath, string wavFilePath)
         {
-            // Sprawdzenie, czy FFmpeg jest zainstalowany
+            // Check if ffmpeg is installed
             if (!File.Exists("/usr/bin/ffmpeg") && Environment.OSVersion.Platform == PlatformID.Unix)
             {
                 throw new Exception("FFmpeg nie jest zainstalowany");
             }
 
-            // Budowanie komendy FFmpeg
+            // FFMPEG Command
             var process = new Process();
             process.StartInfo.FileName = "ffmpeg";
             process.StartInfo.Arguments = $"-i \"{mp3FilePath}\" \"{wavFilePath}\" -y";
@@ -97,7 +97,7 @@ namespace P3
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = true;
 
-            // Uruchomienie FFmpeg
+
             process.Start();
             process.WaitForExit();
 

@@ -16,7 +16,7 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        // Pobierz klucz API OpenAI z zmiennych środowiskowych
+        //  API OpenAI 
         string apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
         if (string.IsNullOrEmpty(apiKey))
         {
@@ -24,7 +24,7 @@ internal class Program
             return;
         }
 
-        // Inicjalizacja klienta OpenAI do generowania obrazów
+        // DALLE  Init
         ImageClient client = new("dall-e-3", apiKey);
 
         string prompt = "Samolot";
@@ -41,11 +41,11 @@ internal class Program
 
         try
         {
-            // Generowanie obrazu za pomocą OpenAI
+
             GeneratedImage image = client.GenerateImage(prompt, options);
             BinaryData bytes = image.ImageBytes;
 
-            // Zapis obrazu do pliku
+
             using FileStream stream = File.OpenWrite(fileName);
             bytes.ToStream().CopyTo(stream);
 
@@ -57,9 +57,9 @@ internal class Program
             return;
         }
 
-        // Szczegóły projektu Azure Custom Vision
+
         string endpoint = "https://<>>.cognitiveservices.azure.com/";
-        string predictionKey = Environment.GetEnvironmentVariable("CUSTOM_VISION_PREDICTION_KEY"); // Pobierz klucz z zmiennych środowiskowych
+        string predictionKey = Environment.GetEnvironmentVariable("CUSTOM_VISION_PREDICTION_KEY"); 
         if (string.IsNullOrEmpty(predictionKey))
         {
             Console.WriteLine("Brak klucza API Custom Vision. Ustaw zmienną środowiskową CUSTOM_VISION_PREDICTION_KEY.");
@@ -96,7 +96,7 @@ internal class Program
             return;
         }
 
-        // Tworzenie klienta predykcji Custom Vision
+
         CustomVisionPredictionClient visionPredictionClient = new CustomVisionPredictionClient(new ApiKeyServiceClientCredentials(predictionKey))
         {
             Endpoint = endpoint
@@ -105,7 +105,7 @@ internal class Program
         using (Stream imageStream = new MemoryStream(imageBytes))
         {
             // Perform the image classification 
-            var result = visionPredictionClient.ClassifyImage(projectId, iterationName, imageStream); // image classification
+            var result = visionPredictionClient.ClassifyImage(projectId, iterationName, imageStream); 
             if (result == null)
                 {
                     Console.WriteLine("Error: The prediction result is null.");
@@ -134,11 +134,11 @@ internal class Program
     
     static async Task MainAsync(string[] args)
     {
-        // Konfiguracja
-        string subscriptionKey = ""; // Zastąp swoim kluczem
-        string endpoint = "https://<>.cognitiveservices.azure.com/"; // Zastąp swoim endpointem
-        string inputImagePath = ""; // Ścieżka do obrazu wejściowego
-        string outputImagePath = ""; // Ścieżka do wynikowego obrazu
+        
+        string subscriptionKey = ""; 
+        string endpoint = "https://<>.cognitiveservices.azure.com/"; 
+        string inputImagePath = ""; 
+        string outputImagePath = ""; 
 
         if (!File.Exists(inputImagePath))
         {
@@ -148,12 +148,12 @@ internal class Program
 
         try
         {
-            // Załaduj obraz do usługi
+            
             byte[] imageBytes = File.ReadAllBytes(inputImagePath);
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
 
-            // Utwórz żądanie POST
+            
             string uri = $"{endpoint}computervision/imageanalysis:segment?api-version=2023-02-01-preview&mode=backgroundRemoval";
 
             using var content = new ByteArrayContent(await File.ReadAllBytesAsync(inputImagePath));
